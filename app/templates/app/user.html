@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-8 jumbotron text-center">
+            <h2> welcome {{request.user}}</h2>
+            <p>Your vote Id is {{user.voters_id}}</p>
+        </div>
+        
+        <div class="col-md-12 col-lg-8 jumbotron-success">
+
+
+            <table class="table table-bordered">
+                <tr>
+                <td>S/N</td>
+                <td>Name</td>
+                <td>Position</td>
+                <td>Cast votes</td>
+                <td>Votes Casted</td>
+                </tr>
+
+                {% for candidate in candidates %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{candidate.name}}</td>
+                    <td>{{candidate.position}}</td>
+                    <td>
+                        <a type="button" class="btn btn-outline-white btn-success " href="{% url 'app:vote' candidate.id %}" name="vote_" >Vote</a>
+                    </td>
+                    <td>{{candidate.count}}</td>
+                </tr>
+
+                {% endfor %}
+                
+            </table>
+         
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
