@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-8 jumbotron text-center">
+            <h2> welcome {{request.user}}</h2>
+            <p>Cast Your votes</p>
+        </div>
+        
+        <div class="col-md-12 col-lg-8 jumbotron-success">
+
+
+            <table class="table table-bordered">
+                <tr>
+                <td>S/N</td>
+                <td>Name</td>
+                <td>Position</td>
+                <td>Votes Casted</td>
+                </tr>
+
+                {% for candidate in candidates %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{candidate.name}}</td>
+                    <td>{{candidate.position}}</td>
+                    <td>{{candidate.count}}</td>
+                </tr>
+
+                {% endfor %}
+                
+            </table>
+            
+         
+          <div class="col-lg-8 col-md-12 ">
+              <h2>Contribute Your Own Vote</h2>
+
+              <form action="{% url 'app:vote' %}" method="POST">
+                  {% csrf_token %}
+
+                  <select class="form-control" name="option">
+                      
+                        {% for candidate in candidates %}
+                        <option>
+                        {{candidate.name}}
+                        </option>
+                        {% endfor %}
+                      
+                  </select>
+
+                  <button class="btn btn-outline-white mt-3" type="submit">Submit</button>
+              </form>
+          </div> 
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

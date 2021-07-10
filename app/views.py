@@ -49,7 +49,7 @@ def register(request):
 
             messages.info(request, f" your profile has been created succesfully, proceed to login")
 
-            return redirect('app:home')
+            return redirect('app:login')
 def loginview(request):
 
     if request.method == "POST":
@@ -81,26 +81,52 @@ def user_view(request):
     if request.user.is_authenticated:
 
         user_details = UserVote.objects.get(user=request.user)
-        candidate = Candidates.objects.all()
+        
         context ={
-            'user':user_details,
-            'candidates':candidate
+            'user':user_details, 
         }
 
     return render(request ,'app/user.html' , context)
 
-def vote(request, id):
+def vote(request):
     if request.user.is_authenticated:
-        candidate = Candidates.objects.get(pk=id)
+        candidate = Candidates.objects.all()
+
+        context = {
+            'candidates': candidate
+        }
+
+    if request.method == "POST":
+
+
+        choice = request.POST.get("option")
+        candidate = Candidates.objects.get(name = choice)
+        user = UserVote.objects.get(user = request.user)
+
+        if candidate:
+            if user.is_voted == True:
+                messages.info(request, 'You have casted a vote once' )
+                return redirect('app:vote')
+            else:
+                candidate.count += 1
+                candidate.save()
+                user.is_voted = True
+                user.save()
+                messages.info(request, 'You have voted successfully')
+                return redirect('app:vote')
         
-        candidate.is_count=True
-
-        candidate.count += 1
-
-        candidate.save()
-
+        else:
+            messages.info(request, 'An Error occured somewhere')
+            return redirect('app:vote')
         
 
-        messages.info(request, 'vote casted succesfully')
-        return redirect('app:user_view')
+    
+
+
+
+
+   
+    return render(request, 'app/vote.html', context)   
+
+
 
